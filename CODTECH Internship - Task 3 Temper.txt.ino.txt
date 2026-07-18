@@ -1,0 +1,58 @@
+// CODTECH Internship - Task 3: Temperature Monitoring System
+
+const int sensorPin = A0;   // Temperature sensor connected to Analog Pin A0
+const int firstLED = 4;     // LED on Pin 4 (Red wire)
+const int secondLED = 3;    // LED on Pin 3 (Orange wire)
+const int thirdLED = 2;     // LED on Pin 2 (Yellow wire)
+
+void setup() {
+  // Set LED pins as outputs
+  pinMode(firstLED, OUTPUT);
+  pinMode(secondLED, OUTPUT);
+  pinMode(thirdLED, OUTPUT);
+  
+  // Initialize Serial Monitor
+  Serial.begin(9600);
+  Serial.println("--- Temperature Monitoring System Ready ---");
+}
+
+void loop() {
+  // Read raw analog value from the sensor
+  int sensorVal = analogRead(sensorPin);
+  
+  // Convert analog value to voltage
+  float voltage = (sensorVal / 1023.0) * 5.0;
+  
+  // Convert voltage to Celsius
+  float temperatureC = (voltage - 0.5) * 100.0;
+  
+  // Print temperature to Serial Monitor
+  Serial.print("Temperature: ");
+  Serial.print(temperatureC);
+  Serial.println(" C");
+  
+  // LED Indicators logic based on temperature
+  if (temperatureC < 22.0) {
+    // COLD: Turn on Pin 2 LED only
+    digitalWrite(thirdLED, HIGH);
+    digitalWrite(secondLED, LOW);
+    digitalWrite(firstLED, LOW);
+    Serial.println("Status: COLD");
+  } 
+  else if (temperatureC >= 22.0 && temperatureC <= 30.0) {
+    // NORMAL: Turn on Pin 3 LED only
+    digitalWrite(thirdLED, LOW);
+    digitalWrite(secondLED, HIGH);
+    digitalWrite(firstLED, LOW);
+    Serial.println("Status: NORMAL");
+  } 
+  else {
+    // HOT: Turn on Pin 4 LED only
+    digitalWrite(thirdLED, LOW);
+    digitalWrite(secondLED, LOW);
+    digitalWrite(firstLED, HIGH);
+    Serial.println("Status: HOT!");
+  }
+  
+  delay(1500); // Wait 1.5 seconds before next reading
+}
